@@ -1,0 +1,35 @@
+--------------------------------------------------
+HOW TO INSTALL THE IIM INDORE AUTO-LOGIN EXTENSION
+--------------------------------------------------
+
+This is a 2-minute, one-time setup.
+
+STEP 1: UNZIP THE FILE
+- You have received a file named "IIM_Indore_Wifi_Login_v1.0.zip".
+- Right-click on it and choose "Extract All..." or "Unzip".
+- This will create a regular folder with the extension files inside. Keep track of where this folder is (e.g., your Desktop or Downloads).
+
+STEP 2: OPEN CHROME EXTENSIONS
+- Open your Google Chrome browser.
+- In the address bar at the top, type: chrome://extensions
+- Press Enter.
+
+STEP 3: ENABLE DEVELOPER MODE
+- On the extensions page, look for a switch in the top-right corner labeled "Developer mode".
+- Turn this switch ON. You will see some new buttons appear.
+
+STEP 4: LOAD THE EXTENSION
+- Click the "Load unpacked" button that appeared on the top-left.
+- A file selection window will open.
+- Navigate to the folder you unzipped in Step 1.
+- Select the ENTIRE FOLDER (the one that contains the manifest.json file) and click "Select Folder".
+
+DONE!
+- The "IIM Indore Auto-Login" extension will now appear in your list of extensions.
+- You can find its icon in your Chrome toolbar (you might need to click the puzzle piece icon to pin it).
+- Click the icon to save your Wi-Fi username and password. The rest is automatic!
+
+IMPORTANT NOTE:
+Because this isn't from the official store, Chrome might occasionally show you a popup saying "Disable developer mode extensions". Just click the "X" or "Cancel" to dismiss it. The extension will continue to work perfectly.
+
+

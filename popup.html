@@ -1,0 +1,55 @@
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Wi-Fi Credentials</title>
+    <style>
+      body { font-family: sans-serif; width: 320px; padding: 12px; }
+      h3 { text-align: center; margin: 0 0 10px; }
+      .row { margin-bottom: 10px; }
+      label { display: block; margin-bottom: 5px; }
+      input { width: 100%; padding: 6px; box-sizing: border-box; }
+      button { padding: 6px 10px; cursor: pointer; }
+      #status { text-align: center; margin-top: 10px; font-weight: bold; color: green; min-height: 18px; }
+      ul { list-style: none; padding: 0; margin: 0 0 10px; }
+      li { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 6px; }
+      .left { display: flex; align-items: center; gap: 6px; }
+      .label { font-weight: 600; }
+      .muted { color: #666; font-size: 12px; }
+      .actions { display: flex; gap: 6px; }
+      .full { width: 100%; }
+      .btn-primary { background: #2e7d32; color: white; border: none; }
+      .btn-secondary { background: #eee; color: #333; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <h3>IIM-I Wi-Fi Login</h3>
+
+    <div class="row">
+      <label>Saved Accounts (select default):</label>
+      <ul id="accountList"></ul>
+    </div>
+
+    <div class="row">
+      <label for="label">Label (e.g., Personal, Guest):</label>
+      <input type="text" id="label" placeholder="Account label" />
+    </div>
+    <div class="row">
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Enter username" />
+    </div>
+    <div class="row">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter password" />
+    </div>
+
+    <div class="row" style="display:flex; gap:8px;">
+      <button id="saveButton" class="btn-primary full">Save Credential</button>
+      <button id="cancelEdit" class="btn-secondary" style="display:none;">Cancel</button>
+    </div>
+
+    <div id="status"></div>
+
+    <script src="popup.js"></script>
+  </body>
+  </html>
