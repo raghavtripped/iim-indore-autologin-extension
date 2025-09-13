@@ -20,17 +20,23 @@ chrome.storage.sync.get(['iimi_accounts', 'iimi_default_id', 'iimi_username', 'i
   // Prefer multi-account structure; fall back to legacy keys
   let username = null;
   let password = null;
+  let accountId = null;
 
   if (Array.isArray(data.iimi_accounts) && data.iimi_accounts.length > 0) {
     const byId = (data.iimi_accounts || []).reduce((map, a) => { map[a.id] = a; return map; }, {});
     const def = byId[data.iimi_default_id] || data.iimi_accounts[0];
-    if (def) { username = def.username; password = def.password; }
+    if (def) { username = def.username; password = def.password; accountId = def.id; }
   } else if (data.iimi_username && data.iimi_password) {
     username = data.iimi_username;
     password = data.iimi_password;
   }
 
   if (username && password) {
+    if (accountId) {
+      try {
+        chrome.runtime.sendMessage({ type: 'iimiActiveAccount', accountId: accountId });
+      } catch (e) {}
+    }
     if (document.readyState !== 'loading') {
       attemptLogin(username, password);
     } else {
