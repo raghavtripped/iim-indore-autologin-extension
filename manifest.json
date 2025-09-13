@@ -8,6 +8,9 @@
     "alarms",
     "webRequest"
   ],
+  "optional_permissions": [
+    "tabs"
+  ],
   "optional_host_permissions": [
     "<all_urls>"
   ],
