@@ -2,7 +2,6 @@
   let accounts = [];
   let defaultId = null;
   let editingId = null;
-  let usage = { dayKey: null, perAccountBytes: {} };
 
   const accountListEl = document.getElementById('accountList');
   const labelInput = document.getElementById('label');
@@ -11,7 +10,6 @@
   const saveButton = document.getElementById('saveButton');
   const cancelEditButton = document.getElementById('cancelEdit');
   const statusDiv = document.getElementById('status');
-  const enableTrackingBtn = document.getElementById('enableTracking');
 
   function generateId() {
     return 'acc_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
@@ -27,14 +25,6 @@
     return new Promise((resolve) => {
       chrome.storage.sync.set({ iimi_accounts: accounts, iimi_default_id: defaultId }, resolve);
     });
-  }
-
-  function formatBytes(bytes) {
-    if (!bytes || bytes <= 0) return '0 B';
-    const units = ['B','KB','MB','GB','TB'];
-    let i = 0; let n = bytes;
-    while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
-    return n.toFixed(n >= 100 ? 0 : n >= 10 ? 1 : 2) + ' ' + units[i];
   }
 
   function renderList() {
@@ -61,10 +51,7 @@
       radio.checked = acc.id === defaultId;
       radio.addEventListener('change', () => {
         defaultId = acc.id;
-        saveState().then(() => {
-          try { chrome.runtime.sendMessage({ type: 'iimiActiveAccount', accountId: defaultId }); } catch (e) {}
-          setStatus('Default updated.');
-        });
+        saveState().then(() => setStatus('Default updated.'));
       });
 
       const textWrap = document.createElement('div');
@@ -74,13 +61,8 @@
       const userSpan = document.createElement('div');
       userSpan.className = 'muted';
       userSpan.textContent = acc.username;
-      const usageSpan = document.createElement('div');
-      usageSpan.className = 'muted';
-      const bytes = usage.perAccountBytes[acc.id] || 0;
-      usageSpan.textContent = 'Today: ' + formatBytes(bytes);
       textWrap.appendChild(labelSpan);
       textWrap.appendChild(userSpan);
-      textWrap.appendChild(usageSpan);
 
       left.appendChild(radio);
       left.appendChild(textWrap);
@@ -186,19 +168,7 @@
       defaultId = data.iimi_default_id || (accounts[0] && accounts[0].id) || null;
 
       migrateIfNeeded(data).then(() => {
-        chrome.storage.local.get(['iimi_usage', 'iimi_active_id'], (localData) => {
-          usage = localData.iimi_usage || { dayKey: null, perAccountBytes: {} };
-          if (localData.iimi_active_id && !defaultId) {
-            defaultId = localData.iimi_active_id;
-          }
-          renderList();
-          // Check whether we have <all_urls> permission; if not, show enable button
-          try {
-            chrome.permissions.contains({ origins: ['<all_urls>'] }, (granted) => {
-              if (enableTrackingBtn) enableTrackingBtn.style.display = granted ? 'none' : 'block';
-            });
-          } catch (e) {}
-        });
+        renderList();
       });
     });
   }
@@ -210,31 +180,5 @@
     loadState();
   } else {
     document.addEventListener('DOMContentLoaded', loadState);
-  }
-
-  try {
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && changes.iimi_usage) {
-        usage = changes.iimi_usage.newValue || { dayKey: null, perAccountBytes: {} };
-        renderList();
-      }
-    });
-  } catch (e) {}
-
-  if (enableTrackingBtn) {
-    enableTrackingBtn.addEventListener('click', () => {
-      try {
-        chrome.permissions.request({ origins: ['<all_urls>'] }, (granted) => {
-          if (granted) {
-            enableTrackingBtn.style.display = 'none';
-            setStatus('Tracking enabled.');
-          } else {
-            setStatus('Tracking permission denied.', false);
-          }
-        });
-      } catch (e) {
-        setStatus('Unable to request permission.', false);
-      }
-    });
   }
 })();
