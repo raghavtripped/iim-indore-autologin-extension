@@ -12,7 +12,6 @@
   const cancelEditButton = document.getElementById('cancelEdit');
   const statusDiv = document.getElementById('status');
   const enableTrackingBtn = document.getElementById('enableTracking');
-  const enableSiteTrackingBtn = document.getElementById('enableSiteTracking');
 
   function generateId() {
     return 'acc_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
@@ -197,7 +196,6 @@
           try {
             chrome.permissions.contains({ origins: ['<all_urls>'] }, (granted) => {
               if (enableTrackingBtn) enableTrackingBtn.style.display = granted ? 'none' : 'block';
-              if (enableSiteTrackingBtn) enableSiteTrackingBtn.style.display = granted ? 'none' : 'block';
             });
           } catch (e) {}
         });
@@ -229,7 +227,6 @@
         chrome.permissions.request({ origins: ['<all_urls>'] }, (granted) => {
           if (granted) {
             enableTrackingBtn.style.display = 'none';
-            if (enableSiteTrackingBtn) enableSiteTrackingBtn.style.display = 'none';
             setStatus('Tracking enabled.');
           } else {
             setStatus('Tracking permission denied.', false);
@@ -237,44 +234,6 @@
         });
       } catch (e) {
         setStatus('Unable to request permission.', false);
-      }
-    });
-  }
-
-  if (enableSiteTrackingBtn) {
-    enableSiteTrackingBtn.addEventListener('click', () => {
-      try {
-        chrome.permissions.request({ permissions: ['tabs'] }, (tabsGranted) => {
-          if (!tabsGranted) {
-            setStatus('Tabs permission denied.', false);
-            return;
-          }
-          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            const tab = tabs && tabs[0];
-            if (!tab || !tab.url) {
-              setStatus('No active site found.', false);
-              return;
-            }
-            let origin;
-            try {
-              const u = new URL(tab.url);
-              origin = u.origin + '/*';
-            } catch (e) {
-              setStatus('Unsupported URL.', false);
-              return;
-            }
-            chrome.permissions.request({ origins: [origin] }, (granted) => {
-              if (granted) {
-                setStatus('Tracking enabled for this site.');
-                enableSiteTrackingBtn.style.display = 'none';
-              } else {
-                setStatus('Site permission denied.', false);
-              }
-            });
-          });
-        });
-      } catch (e) {
-        setStatus('Unable to request site permission.', false);
       }
     });
   }
